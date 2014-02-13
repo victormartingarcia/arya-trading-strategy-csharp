@@ -93,8 +93,8 @@ namespace AryaStrategy
             parameters.Add(new InputParameter("Friday Trading Enabled", 1));
 
             // Session time filter (entries will be only placed during this time frame)
-            parameters.Add(new InputParameter("Trading Time Start", new TimeSpan(1, 0, 0)));
-            parameters.Add(new InputParameter("Trading Time End", new TimeSpan(13, 0, 0)));
+            parameters.Add(new InputParameter("Trading Time Start", new TimeSpan(18, 0, 0)));
+            parameters.Add(new InputParameter("Trading Time End", new TimeSpan(16, 0, 0)));
 
             // The previous N bars period used for calculating Price Range
             parameters.Add(new InputParameter("Range Calculation Period", 10));
