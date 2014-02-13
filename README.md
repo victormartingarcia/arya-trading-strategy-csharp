@@ -81,12 +81,8 @@ if (IsDayEnabledForTrading(this.Bars.Time[0].DayOfWeek))
     // Time-of-day filter
     if (IsTimeEnabledForTrading(this.Bars.Time[0]))
     {
-        // Set current Range as Max(High) - Min(Low) of last "Range Calculation Period" bars
-        int lookbackPeriod = (int)this.GetInputParameter("Range Calculation Period");
-        decimal volatility = this.Bars.High.GetHighestValue(lookbackPeriod) - this.Bars.Low.GetLowestValue(lookbackPeriod);
-
         // Volatility filter
-        if (volatility > (decimal)this.GetInputParameter("Minimum Range Filter"))
+        if (CalculateVolatilityRange() > (decimal)this.GetInputParameter("Minimum Range Filter"))
         {
             // ADX minimum level and current trending filters
             if (this.GetOpenPosition() == 0 && IsADXEnabledForLongEntry() && IsBullishUnderlyingTrend())
@@ -193,7 +189,6 @@ else if (this.GetOpenPosition() == -1 && this.Bars.Close[0] < furthestClose)
         this.InsertOrder(exitShortOrder);
     }
 }
-
 ```
 
 Download

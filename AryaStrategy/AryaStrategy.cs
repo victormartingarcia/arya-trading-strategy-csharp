@@ -94,7 +94,7 @@ namespace AryaStrategy
 
             // Session time filter (entries will be only placed during this time frame)
             parameters.Add(new InputParameter("Trading Time Start", new TimeSpan(18, 0, 0)));
-            parameters.Add(new InputParameter("Trading Time End", new TimeSpan(16, 0, 0)));
+            parameters.Add(new InputParameter("Trading Time End", new TimeSpan(6, 0, 0)));
 
             // The previous N bars period used for calculating Price Range
             parameters.Add(new InputParameter("Range Calculation Period", 10));
@@ -173,12 +173,8 @@ namespace AryaStrategy
                 // Time-of-day filter
                 if (IsTimeEnabledForTrading(this.Bars.Time[0]))
                 {
-                    // Set current Range as Max(High) - Min(Low) of last "Range Calculation Period" bars
-                    int lookbackPeriod = (int)this.GetInputParameter("Range Calculation Period");
-                    decimal volatility = this.Bars.High.GetHighestValue(lookbackPeriod) - this.Bars.Low.GetLowestValue(lookbackPeriod);
-
                     // Volatility filter
-                    if (volatility > (decimal)this.GetInputParameter("Minimum Range Filter"))
+                    if (CalculateVolatilityRange() > (decimal)this.GetInputParameter("Minimum Range Filter"))
                     {
                         // ADX minimum level and current trending filters
                         if (this.GetOpenPosition() == 0 && IsADXEnabledForLongEntry() && IsBullishUnderlyingTrend())
