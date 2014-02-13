@@ -15,7 +15,7 @@ Table of Contents
 Overview
 ----
 
-Arya is a trading algorithm written in C# using the [TradingMotion SDK] development tools (there is a [VB.net] port too).
+Arya is a trading algorithm written in C# using the [TradingMotion SDK] development tools (there is a [VB.net port] too).
 
 ![OHLC example chart](markdown_files/OHLC.png)
 <sub>__Image footnote:__ Example of Arya OHLC financial chart showing some automatic trades</sub>
@@ -239,7 +239,7 @@ Disclaimer
 
 I am R&D engineer at [TradingMotion LLC], and head of [TradingMotion SDK] platform. Beware, the info here can be a little biased ;)
 
-  [VB.net port]: https://github.com/victormartingarcia/Arya-trading-strategy-vbnet
+  [VB.net port]: https://github.com/victormartingarcia/arya-trading-strategy-vbnet
   [TradingMotion SDK]: http://sdk.tradingmotion.com
   [AryaStrategy.cs]: AryaStrategy/AryaStrategy.cs
   [iSystems platform]: https://www.isystems.com
