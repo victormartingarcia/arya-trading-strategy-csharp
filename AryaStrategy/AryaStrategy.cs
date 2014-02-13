@@ -334,7 +334,7 @@ namespace AryaStrategy
 
         private bool IsBullishUnderlyingTrend()
         {
-            // Consider bullish underlying trend if EMA has raised on the last bar
+            // Consider bullish underlying trend if SMA has raised on the last bar
             return smaIndicator.GetAvSimple()[0] > smaIndicator.GetAvSimple()[1];
         }
 
@@ -346,7 +346,7 @@ namespace AryaStrategy
 
         private bool IsBearishUnderlyingTrend()
         {
-            // Consider bearish underlying trend if EMA has fallen on the last bar
+            // Consider bearish underlying trend if SMA has fallen on the last bar
             return smaIndicator.GetAvSimple()[0] < smaIndicator.GetAvSimple()[1];
         }
     }
