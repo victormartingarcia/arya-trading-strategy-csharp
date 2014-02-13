@@ -63,7 +63,6 @@ Arya Trading Strategy rules:
 Here is a simplified C# source code of Arya's _OnNewBar()_ function. The complete code is all contained in [AryaStrategy.cs] along with comments and definition of parameters.
 
 ```csharp
-// ========== ENTRIES ==========
 decimal buySignal = (decimal)this.GetInputParameter("Trend-following buy signal");
 decimal sellSignal = (decimal)this.GetInputParameter("Trend-following sell signal");
 
@@ -142,7 +141,6 @@ else if (shortTradingEnabled && stochasticIndicator.GetD()[1] >= sellSignal && s
 else if (this.GetOpenPosition() == 1 && this.Bars.Close[0] > furthestClose)
 {
     // We're long and the price has moved in our favour
-
     furthestClose = this.Bars.Close[0];
 
     // Increasing acceleration
@@ -169,7 +167,6 @@ else if (this.GetOpenPosition() == 1 && this.Bars.Close[0] > furthestClose)
 else if (this.GetOpenPosition() == -1 && this.Bars.Close[0] < furthestClose)
 {
     // We're short and the price has moved in our favour
-
     furthestClose = this.Bars.Close[0];
 
     // Increasing acceleration
