@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using TradingMotion.SDK.Algorithms;
-using TradingMotion.SDK.Algorithms.InputParameters;
-using TradingMotion.SDK.Markets.Charts;
-using TradingMotion.SDK.Markets.Orders;
-using TradingMotion.SDK.Markets.Indicators.Momentum;
-using TradingMotion.SDK.Markets.Indicators.OverlapStudies;
+using TradingMotion.SDKv2.Algorithms;
+using TradingMotion.SDKv2.Algorithms.InputParameters;
+using TradingMotion.SDKv2.Markets.Charts;
+using TradingMotion.SDKv2.Markets.Orders;
+using TradingMotion.SDKv2.Markets.Indicators.Momentum;
+using TradingMotion.SDKv2.Markets.Indicators.OverlapStudies;
 
 /// <summary>
 /// Arya trading rules:
@@ -24,8 +24,8 @@ namespace AryaStrategy
         Order trailingStopOrder;
         Order profitOrder;
 
-        decimal acceleration;
-        decimal furthestClose;
+        double acceleration;
+        double furthestClose;
 
         public AryaStrategy(Chart mainChart, List<Chart> secondaryCharts)
             : base(mainChart, secondaryCharts)
@@ -100,7 +100,7 @@ namespace AryaStrategy
             parameters.Add(new InputParameter("Range Calculation Period", 10));
 
             // Minimum Volatility allowed for placing entries
-            parameters.Add(new InputParameter("Minimum Range Filter", 0.002m));
+            parameters.Add(new InputParameter("Minimum Range Filter", 0.002));
 
             // The previous N bars period ADX indicator will use
             parameters.Add(new InputParameter("ADX Period", 14));
@@ -108,14 +108,14 @@ namespace AryaStrategy
             parameters.Add(new InputParameter("SMA Period", 78));
 
             // Minimum ADX value for placing long entries
-            parameters.Add(new InputParameter("Min ADX Long Entry", 12m));
+            parameters.Add(new InputParameter("Min ADX Long Entry", 12.0));
             // Minimum ADX value for placing short entries
-            parameters.Add(new InputParameter("Min ADX Short Entry", 12m));
+            parameters.Add(new InputParameter("Min ADX Short Entry", 12.0));
 
             // The distance between the entry and the initial trailing stop price
             parameters.Add(new InputParameter("Trailing Stop Loss ticks distance", 24));
             // The initial acceleration of the trailing stop
-            parameters.Add(new InputParameter("Trailing Stop acceleration", 0.2m));
+            parameters.Add(new InputParameter("Trailing Stop acceleration", 0.2));
 
             // The distance between the entry and the profit target level
             parameters.Add(new InputParameter("Profit Target ticks distance", 77));
@@ -123,9 +123,9 @@ namespace AryaStrategy
             // The previous N bars period Stochastic indicator will use
             parameters.Add(new InputParameter("Stochastic Period", 68));
             // Break level of Stochastic %D we consider a buy signal
-            parameters.Add(new InputParameter("Trend-following buy signal", 51m));
+            parameters.Add(new InputParameter("Trend-following buy signal", 51.0));
             // Break level of Stochastic %D we consider a sell signal
-            parameters.Add(new InputParameter("Trend-following sell signal", 49m));
+            parameters.Add(new InputParameter("Trend-following sell signal", 49.0));
 
             return parameters;
         }
@@ -158,11 +158,11 @@ namespace AryaStrategy
         /// </summary>
         public override void OnNewBar()
         {
-            decimal buySignal = (decimal)this.GetInputParameter("Trend-following buy signal");
-            decimal sellSignal = (decimal)this.GetInputParameter("Trend-following sell signal");
+            double buySignal = (double)this.GetInputParameter("Trend-following buy signal");
+            double sellSignal = (double)this.GetInputParameter("Trend-following sell signal");
 
-            decimal stopMargin = (int)this.GetInputParameter("Trailing Stop Loss ticks distance") * this.GetMainChart().Symbol.TickSize;
-            decimal profitMargin = (int)this.GetInputParameter("Profit Target ticks distance") * this.GetMainChart().Symbol.TickSize;
+            double stopMargin = (int)this.GetInputParameter("Trailing Stop Loss ticks distance") * this.GetMainChart().Symbol.TickSize;
+            double profitMargin = (int)this.GetInputParameter("Profit Target ticks distance") * this.GetMainChart().Symbol.TickSize;
 
             bool longTradingEnabled = false;
             bool shortTradingEnabled = false;
@@ -174,7 +174,7 @@ namespace AryaStrategy
                 if (IsTimeEnabledForTrading(this.Bars.Time[0]))
                 {
                     // Volatility filter
-                    if (CalculateVolatilityRange() > (decimal)this.GetInputParameter("Minimum Range Filter"))
+                    if (CalculateVolatilityRange() > (double)this.GetInputParameter("Minimum Range Filter"))
                     {
                         // ADX minimum level and current trending filters
                         if (this.GetOpenPosition() == 0 && IsADXEnabledForLongEntry() && IsBullishUnderlyingTrend())
@@ -206,7 +206,7 @@ namespace AryaStrategy
                 profitOrder.IsChildOf = trailingStopOrder;
 
                 // Setting the initial acceleration for the trailing stop and the furthest (the most extreme) close price
-                acceleration = (decimal)this.GetInputParameter("Trailing Stop acceleration");
+                acceleration = (double)this.GetInputParameter("Trailing Stop acceleration");
                 furthestClose = this.Bars.Close[0];
             }
             else if (shortTradingEnabled && stochasticIndicator.GetD()[1] >= sellSignal && stochasticIndicator.GetD()[0] < sellSignal)
@@ -226,7 +226,7 @@ namespace AryaStrategy
                 profitOrder.IsChildOf = trailingStopOrder;
 
                 // Setting the initial acceleration for the trailing stop and the furthest (the most extreme) close price
-                acceleration = (decimal)this.GetInputParameter("Trailing Stop acceleration");
+                acceleration = (double)this.GetInputParameter("Trailing Stop acceleration");
                 furthestClose = this.Bars.Close[0];
             }
             else if (this.GetOpenPosition() == 1 && this.Bars.Close[0] > furthestClose)
@@ -315,7 +315,7 @@ namespace AryaStrategy
             }
         }
 
-        private decimal CalculateVolatilityRange()
+        private double CalculateVolatilityRange()
         {
             // Set current Range as Max(High) - Min(Low) of last "Range Calculation Period" bars
             int lookbackPeriod = (int)this.GetInputParameter("Range Calculation Period");
@@ -325,7 +325,7 @@ namespace AryaStrategy
         private bool IsADXEnabledForLongEntry()
         {
             // Long entry enabled if ADX is above "Min ADX Long Entry" parameter
-            return adxIndicator.GetADX()[0] >= (decimal)this.GetInputParameter("Min ADX Long Entry");
+            return adxIndicator.GetADX()[0] >= (double)this.GetInputParameter("Min ADX Long Entry");
         }
 
         private bool IsBullishUnderlyingTrend()
@@ -337,7 +337,7 @@ namespace AryaStrategy
         private bool IsADXEnabledForShortEntry()
         {
             // Short entry enabled if ADX is above "Min ADX Short Entry" parameter
-            return adxIndicator.GetADX()[0] >= (decimal)this.GetInputParameter("Min ADX Short Entry");
+            return adxIndicator.GetADX()[0] >= (double)this.GetInputParameter("Min ADX Short Entry");
         }
 
         private bool IsBearishUnderlyingTrend()

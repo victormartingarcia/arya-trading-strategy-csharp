@@ -66,11 +66,11 @@ Arya Trading Strategy rules:
 Here is a simplified C# source code of Arya's _OnNewBar()_ function. The complete code is all contained in [AryaStrategy.cs] along with comments and definition of parameters.
 
 ```csharp
-decimal buySignal = (decimal)this.GetInputParameter("Trend-following buy signal");
-decimal sellSignal = (decimal)this.GetInputParameter("Trend-following sell signal");
+double buySignal = (double)this.GetInputParameter("Trend-following buy signal");
+double sellSignal = (double)this.GetInputParameter("Trend-following sell signal");
 
-decimal stopMargin = (int)this.GetInputParameter("Trailing Stop Loss ticks distance") * this.GetMainChart().Symbol.TickSize;
-decimal profitMargin = (int)this.GetInputParameter("Profit Target ticks distance") * this.GetMainChart().Symbol.TickSize;
+double stopMargin = (int)this.GetInputParameter("Trailing Stop Loss ticks distance") * this.GetMainChart().Symbol.TickSize;
+double profitMargin = (int)this.GetInputParameter("Profit Target ticks distance") * this.GetMainChart().Symbol.TickSize;
 
 bool longTradingEnabled = false;
 bool shortTradingEnabled = false;
@@ -82,7 +82,7 @@ if (IsDayEnabledForTrading(this.Bars.Time[0].DayOfWeek))
     if (IsTimeEnabledForTrading(this.Bars.Time[0]))
     {
         // Volatility filter
-        if (CalculateVolatilityRange() > (decimal)this.GetInputParameter("Minimum Range Filter"))
+        if (CalculateVolatilityRange() > (double)this.GetInputParameter("Minimum Range Filter"))
         {
             // ADX minimum level and current trending filters
             if (this.GetOpenPosition() == 0 && IsADXEnabledForLongEntry() && IsBullishUnderlyingTrend())
@@ -114,7 +114,7 @@ if (longTradingEnabled && stochasticIndicator.GetD()[1] <= buySignal && stochast
     profitOrder.IsChildOf = trailingStopOrder;
 
     // Setting the initial acceleration for the trailing stop and the furthest (the most extreme) close price
-    acceleration = (decimal)this.GetInputParameter("Trailing Stop acceleration");
+    acceleration = (double)this.GetInputParameter("Trailing Stop acceleration");
     furthestClose = this.Bars.Close[0];
 }
 else if (shortTradingEnabled && stochasticIndicator.GetD()[1] >= sellSignal && stochasticIndicator.GetD()[0] < sellSignal)
@@ -134,7 +134,7 @@ else if (shortTradingEnabled && stochasticIndicator.GetD()[1] >= sellSignal && s
     profitOrder.IsChildOf = trailingStopOrder;
 
     // Setting the initial acceleration for the trailing stop and the furthest (the most extreme) close price
-    acceleration = (decimal)this.GetInputParameter("Trailing Stop acceleration");
+    acceleration = (double)this.GetInputParameter("Trailing Stop acceleration");
     furthestClose = this.Bars.Close[0];
 }
 else if (this.GetOpenPosition() == 1 && this.Bars.Close[0] > furthestClose)
